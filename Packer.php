@@ -138,7 +138,9 @@
 
         //Check iteration was productive
         if ($packedBoxesIteration->isEmpty()) {
-          throw new \RuntimeException('Item ' . $this->items->top()->getDescription() . ' is too large to fit into any box');
+          //throw new \RuntimeException('Item ' . $this->items->top()->getDescription() . ' is too large to fit into any box');
+          $this->logger->log(LogLevel::ERROR, 'Item ' . $this->items->top()->getDescription() . ' is too large to fit into any box');
+          break;
         }
 
         //Find best box of iteration, and remove packed items from unpacked list
