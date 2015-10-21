@@ -319,8 +319,8 @@
             break;
           }
 
-          $remainingWidth = $layerWidth ? min(floor($layerWidth * 1.1), $aBox->getInnerWidth()) : $aBox->getInnerWidth();
-          $remainingLength = $layerLength ? min(floor($layerLength * 1.1), $aBox->getInnerLength()) : $aBox->getInnerLength();
+          $remainingWidth = $layerWidth ? min(floor($layerWidth * 1.2), $aBox->getInnerWidth()) : $aBox->getInnerWidth();
+          $remainingLength = $layerLength ? min(floor($layerLength * 1.2), $aBox->getInnerLength()) : $aBox->getInnerLength();
           $remainingDepth -= $layerDepth;
 
           $layerWidth = $layerLength = $layerDepth = 0;
