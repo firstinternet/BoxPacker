@@ -146,9 +146,20 @@
 
         //Find best box of iteration, and remove packed items from unpacked list
         $bestBox = $packedBoxesIteration->top();
-        for ($i = 0; $i < $bestBox->getItems()->count(); $i++) {
-          $this->items->extract();
+        $unPackedItems = $this->items->asArray();
+        foreach(clone $bestBox->getItems() as $packedItem) {
+          foreach ($unPackedItems as $unpackedKey => $unpackedItem) {
+            if ($packedItem === $unpackedItem) {
+              unset($unPackedItems[$unpackedKey]);
+              break;
+            }
+          }
         }
+        $unpackedItemList = new ItemList();
+        foreach ($unPackedItems as $unpackedItem) {
+          $unpackedItemList->insert($unpackedItem);
+        }
+        $this->items = $unpackedItemList;
         $packedBoxes->insert($bestBox);
 
       }
@@ -170,7 +181,7 @@
 
       $overWeightBoxes = [];
       $underWeightBoxes = [];
-      foreach ($aPackedBoxes as $packedBox) {
+      foreach (clone $aPackedBoxes as $packedBox) {
         $boxWeight = $packedBox->getWeight();
         if ($boxWeight > $targetWeight) {
           $overWeightBoxes[] = $packedBox;
@@ -212,7 +223,13 @@
                 $newHeavierBoxPacker->setBoxes($this->boxes);
                 $newHeavierBoxPacker->setItems($overWeightBoxItems);
 
-                $overWeightBoxes[$o] = $newHeavierBoxPacker->doVolumePacking()->extract();
+                $newHeavierBoxes = $newHeavierBoxPacker->doVolumePacking();
+                if (count($newHeavierBoxes) > 1) { //found an edge case in packing algorithm that *increased* box count
+                  $this->logger->log(LogLevel::INFO,  "[REDISTRIBUTING WEIGHT] Abandoning redistribution, because new packing is less efficient than original");
+                  return $aPackedBoxes;
+                }
+
+                $overWeightBoxes[$o] = $newHeavierBoxes->extract();
                 $underWeightBoxes[$u] = $newLighterBox;
 
                 $tryRepack = true; //we did some work, so see if we can do even better
@@ -254,7 +271,8 @@
         $itemToPack = $aItems->top();
 
         if ($itemToPack->getDepth() > $remainingDepth || $itemToPack->getWeight() > $remainingWeight) {
-          break;
+          $aItems->extract();
+          continue;
         }
 
         $this->logger->log(LogLevel::DEBUG,  "evaluating item {$itemToPack->getDescription()}");
@@ -316,7 +334,8 @@
 
           if ($remainingLength < min($itemWidth, $itemLength) || $layerDepth == 0) {
             $this->logger->log(LogLevel::DEBUG,  "doesn't fit on layer even when empty");
-            break;
+            $aItems->extract();
+            continue;
           }
 
           $remainingWidth = $layerWidth ? min(floor($layerWidth * 1.1), $aBox->getInnerWidth()) : $aBox->getInnerWidth();

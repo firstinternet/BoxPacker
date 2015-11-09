@@ -6,7 +6,7 @@ them all in.
 
 Especially useful for e.g. e-commerce contexts when you need to know box size/weight to calculate shipping costs.
 
-[![Build Status](https://travis-ci.org/dvdoug/BoxPacker.png)](https://travis-ci.org/dvdoug/BoxPacker)
+[![Build Status](https://travis-ci.org/dvdoug/BoxPacker.svg?branch=master)](https://travis-ci.org/dvdoug/BoxPacker)
 
 [Wikipedia](http://en.wikipedia.org/wiki/Bin_packing_problem) says this is NP-hard, and there is no way to always
 achieve an optimum solution without running through every single permutation. But that's OK because this implementation
@@ -42,7 +42,7 @@ If you use [Composer](http://getcomposer.org/), just add `dvdoug/boxpacker` to y
 ```json
     {
         "require": {
-            "dvdoug/boxpacker": "~1.4"
+            "dvdoug/boxpacker": "~1.5"
         }
     }
 ```

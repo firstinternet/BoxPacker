@@ -1,6 +1,6 @@
-imports:
-    - php
+checks:
+    php: true
 
 tools:
     external_code_coverage:
-        timeout: 900 # Timeout in seconds.
+        timeout: 1800 # Timeout in seconds.
